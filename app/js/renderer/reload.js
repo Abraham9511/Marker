@@ -4,10 +4,10 @@
 // bug
 // bug
 // 当某行因输入过长而显示换行时，行号的显示位置有问题
-exports.reload = () => {
-  const value = $('#editor').val();
-  $('#preview').html(value);
-  const result = $('#editor').val().match(new RegExp('\n', 'g')); // eslint-disable-line
+exports.reload = (fileIndex) => {
+  const value = $('.editor').eq(fileIndex).val();
+  $('.preview').eq(fileIndex).html(value);
+  const result = $('.editor').eq(fileIndex).val().match(new RegExp('\n', 'g')); // eslint-disable-line
   const countOfReturn = !result ? 0 : result.length;
   let countOfChildren = $('#lineNumber').children().length;
 
@@ -27,4 +27,10 @@ exports.reload = () => {
       countOfChildren -= 1;
     }
   }
+  //文件为空时，返回真
+  console.log($('.editor').eq(fileIndex).val().toString().length);
+  if ($('.editor').eq(fileIndex).val().toString().length == 0)
+    return true;
+  else
+    return false;
 };

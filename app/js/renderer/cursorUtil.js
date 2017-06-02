@@ -5,16 +5,16 @@ const reload = require('./reload').reload;
  * @param  {[number]} start [起始位置]
  * @param  {[number]} end   [结束位置]
  */
-const setSelection = (start, end) => {
-  const editor = $('#editor')[0];
+const setSelection = (index, start, end) => {
+  const editor = $('.editor')[index];
 
   editor.setSelectionRange(start, end);
-  $('#editor').focus();
+  $('.editor').eq(index).focus();
 
   // 因为这样改变输入内容时，
   // 并不会触发input和propertyChange事件
   // 所以这里需要自行待用该事件
-  reload();
+  reload(index);
 };
 
 /**
@@ -23,34 +23,34 @@ const setSelection = (start, end) => {
  * @param  {[number]} start   [选择区的开始]
  * @param  {[number]} end     [选择区的结束]
  */
-exports.addContent = (content, start, end) => {
+exports.addContent = (index, content, start, end) => {
   let cursor = 0;
-  const editor = $('#editor')[0];
+  const editor = $('.editor')[index];
 
   // 获取光标的位置
   if (editor.selectionEnd) {
     cursor = editor.selectionEnd;
   }
-  const oldValue = $('#editor').val();
+  const oldValue = $('.editor').eq(index).val();
   const oldValue1 = oldValue.substring(0, cursor);
   const oldValue2 = oldValue.substring(cursor, oldValue.length);
 
   // 因为插入行时，不需要提示文字
   // 所以这里将光标至于最后
   if (start === -1 && end === -1) {
-    $('#editor').val(oldValue + content);
+    $('.editor').eq(index).val(oldValue + content);
     const len = oldValue.length + content.length;
-    setSelection(len, len);
+    setSelection(index, len, len);
   } else {
-    $('#editor').val(oldValue1 + content + oldValue2);
-    setSelection(oldValue1.length + start, oldValue1.length + end);
+    $('.editor').eq(index).val(oldValue1 + content + oldValue2);
+    setSelection(index, oldValue1.length + start, oldValue1.length + end);
   }
 };
 
 // 将光标移到尾部
-exports.moveCursorEnd = () => {
-  const editor = $('#editor')[0];
-  const value = $('#editor').val();
+exports.moveCursorEnd = (fileIndex) => {
+  const editor = $('.editor')[fileIndex];
+  const value = $('.editor').eq(fileIndex).val();
   const cursor = editor.selectionEnd;
   let index = value.indexOf('\n', cursor);
 
@@ -62,9 +62,9 @@ exports.moveCursorEnd = () => {
   editor.setSelectionRange(index, index);
 };
 
-exports.moveCursorThisLineStart = () => {
-  const editor = $('#editor')[0];
-  const value = $('#editor').val();
+exports.moveCursorThisLineStart = (fileIndex) => {
+  const editor = $('.editor')[fileIndex];
+  const value = $('.editor').eq(fileIndex).val();
   const cursor = editor.selectionEnd;
   let index = value.lastIndexOf('\n', cursor);
 
@@ -81,9 +81,9 @@ exports.moveCursorThisLineStart = () => {
 };
 
 // 按行选择
-exports.expandLine = () => {
-  const editor = $('#editor')[0];
-  const value = $('#editor').val();
+exports.expandLine = (fileIndex) => {
+  const editor = $('.editor')[fileIndex];
+  const value = $('.editor').eq(fileIndex).val();
   const start = editor.selectionStart;
   const end = editor.selectionEnd;
   const indexBeforeStart = value.lastIndexOf('\n', start);
