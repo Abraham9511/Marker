@@ -116,6 +116,8 @@ addContent = (index, editorText, previewText) => {
 	var newPreview = $("<div></div>").text(previewText);
 	newPreview.addClass("preview");
 	newEditor.addClass("editor");
+	newEditor.css('display','none');
+	newPreview.css('display','none');
 	newEditor.attr("autofocus", "autofocus");
   	$('.editor').eq(index-1).after(newEditor);
 	$('.preview').eq(index-1).after(newPreview);
