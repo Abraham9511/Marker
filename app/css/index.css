@@ -16,7 +16,7 @@ html, body {
 .outer-header {
   height: 5%;
   width: 100%;
-  background-color: #434443;
+  background-color: #262821;
   display: flex;
   align-items: center;
 }
@@ -41,6 +41,10 @@ html, body {
   width: 30px;
 }
 
+#lineNumberContainer .inner-header {
+  background-color: #262821;
+}
+
 #lineNumber {
   background-color: #262821;
 }
@@ -49,7 +53,8 @@ html, body {
 #lineNumber div {
   font-size: 14px;
   text-align: right;
-  margin: 1px 10px 1px 0;
+  margin: 0 10px 0 0;
+  padding: 1px 0 0 0;
   color: #909089;
 }
 
@@ -58,23 +63,46 @@ html, body {
   /*让这两个元素平分剩下的空间*/
   flex-grow: 1;
   flex-basis: 0;
+  background-color: #262821;
 }
 
 .inner-header {
   height: 5%;
+  display: flex;
+}
+
+.inner-header .title-container {
+  display: inline-block;
+  height: 100%;
+  width: 25%;
+  background-color: #262821;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inner-header .title-container span {
+  overflow: hidden;
+  color: #DBDBDB;
+}
+
+.inner-header .active-container {
+  flex-shrink: 0;
+  background-color: #434443;
 }
 
 .editor, .preview, #scrollBar, #lineNumber {
-  height: calc(95% - 1px);
+  height: 95%;
   width: 100%;
   font-size: 14px;
   border: none;
-  border-top: 1px solid #000000;
 }
 
 .editor {
   display: block;
   outline: none;
+  background-color: #434443;
 }
 
 /*当该行不足以存放整个句子时进行换行*/
@@ -85,8 +113,9 @@ html, body {
 #scrollBarContainer {
   height: 100%;
   width: 5px;
+  background-color: #262821
 }
 
-#scrollBar {
-  background-color: #E9EDEB;
+#previewContainer .preview {
+  background-color: #434443;
 }
