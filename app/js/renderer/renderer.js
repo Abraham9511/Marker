@@ -6,8 +6,8 @@ const fileUtil = require('./fileUtil').fileUtil;
 
 const ipcRenderer = electron.ipcRenderer;
 
-//文件的索引
-var fileIndex = 0;
+// 文件的索引
+let fileIndex = 0;
 
 $('.outer-header').delegate('img', 'click', function click() {
   const index = $(this).attr('data');
@@ -36,10 +36,11 @@ $('.outer-header').delegate('img', 'click', function click() {
 
 $('#editorContainer').on('input propertychange', 'textarea', () => {
   // 发送文件的状态信息
-  if (reload(fileIndex) == true)
+  if (reload(fileIndex) === true) {
     ipcRenderer.send('mainFile', (event, ['empty', fileIndex]));
-  else
+  } else {
     ipcRenderer.send('mainFile', (event, ['unsaved', fileIndex]));
+  }
 });
 
 ipcRenderer.on('SC', (event, args) => {
@@ -49,16 +50,15 @@ ipcRenderer.on('SC', (event, args) => {
 ipcRenderer.on('SE', (event, args) => {
   cursorUtil[args](fileIndex);
 });
-//监听file通道的上的信息，调用对应的文件操作函数
+
+// 监听file通道的上的信息，调用对应的文件操作函数
 ipcRenderer.on('file', (event, args) => {
-  if (args[0] == 'focus' || args[0] == 'newFile' || args[0] == 'close') {
-    fileIndex = args[1]['index'];
+  if (args[0] === 'focus' || args[0] === 'newFile' || args[0] === 'close') {
+    fileIndex = args[1].index;
   }
-  if (args[0] == 'close')
-    console.log(fileIndex);
   fileUtil[args[0]](args[1]);
 });
 
-changeIndex = (i) => {
+const changeIndex = (i) => {
   fileIndex = i;
 };

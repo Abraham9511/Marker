@@ -15,7 +15,7 @@ exports.reload = (fileIndex) => {
   // 如果当前没有内容，则不显示行号
   if (value.length === 0) {
     $('#lineNumber').children().remove();
-    return;
+    return true;
   }
 
   while (countOfChildren !== countOfReturn + 1) {
@@ -27,10 +27,10 @@ exports.reload = (fileIndex) => {
       countOfChildren -= 1;
     }
   }
-  //文件为空时，返回真
-  console.log($('.editor').eq(fileIndex).val().toString().length);
-  if ($('.editor').eq(fileIndex).val().toString().length == 0)
+  // 文件为空时，返回真
+  // console.log($('.editor').eq(fileIndex).val().toString().length);
+  if ($('.editor').eq(fileIndex).val().toString().length === 0) {
     return true;
-  else
-    return false;
+  }
+  return false;
 };

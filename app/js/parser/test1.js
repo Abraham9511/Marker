@@ -1,14 +1,15 @@
-var marked = require('marked');
-var renderer = new marked.Renderer();
+const marked = require('marked');
 
-renderer.heading = function(text, level) {
-    var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
+const renderer = new marked.Renderer();
 
-    return '<h' + level+ '><a name="' +
-        escapedText + '" class="archor" href="#' +
-        escapedText +
-        '"><span class="header-link"></span></a>' +
-        text + '</h' + level + '>';
-}
+renderer.heading = (text, level) => {
+  const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
 
-console.log(marked('# heading+', {renderer: renderer}));
+  return '<h' + level + '><a name="' +
+    escapedText + '" class="archor" href="#' +
+    escapedText +
+    '"><span class="header-link"></span></a>' +
+    text + '</h' + level + '>';
+};
+
+// console.log(marked('# heading+', { renderer: renderer }));

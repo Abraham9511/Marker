@@ -12,6 +12,8 @@ cd Marker
 yarn install
 # 运行
 yarn run start
+# 编码规范检查
+yarn run lint
 ```
 
 ## 分工
