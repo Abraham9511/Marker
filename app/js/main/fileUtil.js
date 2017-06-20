@@ -8,16 +8,19 @@ const sendMessageToRenderer = sendMessageToRendererUtil.sendMessageToRenderer;
 // 文件的列表，存储文件的路径和保存状态
 // 默认打开一个空文件
 const fileList = new Array({
-  path: '',
+  path: 'untitled',
   // 默认为已保存
   // 0为保存 1为保存中 2为已保存
   saved: 2,
   empty: true,
   closing: false,
+  // 每个文件都有唯一的编号
+  num: 1,
 });
 
 // 当前聚焦的文件索引
 let index = 0;
+let fileNum = 1;
 
 const searchFile = (path) => {
   let i = 0;
@@ -31,23 +34,34 @@ const searchFile = (path) => {
   return -1;
 };
 
-const newFile = () => {
-  // 当前没有任何文件
-  if (fileList[index].path.length === 0 && fileList[index].saved === 2) {
-    fileList[index].path = 'untitled';
-    // 添加文件标签
-    sendMessageToRenderer('file', ['newFile', { index }]);
-  } else {
-    // 插入文件
-    fileList.splice(index, 0, {
-      path: 'untitled',
-      saved: 2,
-      empty: true,
-      closing: false,
-    });
-    index += 1;
-    sendMessageToRenderer('file', ['newFile', { index }]);
+const searchNum = (number) => {
+  let i = 0;
+  while (i < fileList.length) {
+    if (fileList[i].num === number) {
+      return i;
+    }
+    i += 1;
   }
+  // 没找到该编码
+  return -1;
+};
+
+const newFile = () => {
+  // 递增文件编号
+  fileNum += 1;
+  // 插入文件
+  fileList.splice(index + 1, 0, {
+    path: 'untitled',
+    saved: 2,
+    empty: true,
+    closing: false,
+    num: fileNum,
+  });
+  index += 1;
+  sendMessageToRenderer('file', ['newFile', {
+    index: index,
+    num: fileNum,
+  }]);
 };
 
 const saveAs = (_i) => {
@@ -62,13 +76,11 @@ const saveAs = (_i) => {
   }, (filename) => {
       // 选择文件时点击取消会导致undifined
     if (typeof (filename) !== 'undefined') {
-      if (fileList[index].path.length === 0) {
-        // todo添加文件标签
-      }
       fileList[index].path = filename;
       sendMessageToRenderer('file', ['save', {
         path: filename,
         index: i,
+        changeName: true,
       }]);
       fileList[i].saved = 1;
     }
@@ -80,7 +92,7 @@ const save = (_i) => {
   // 文件是否保存过
   if (fileList[i].saved === 0) {
     // 文件路径为空或者untitled时，文件未被保存过，需另存为
-    if (fileList[i].path.length === 0 || fileList[i].path === 'untitled') {
+    if (fileList[i].path === 'untitled') {
       saveAs(i);
     } else {
       // 保存中
@@ -107,10 +119,9 @@ const closeFile = (_i) => {
     let closeFlag = true;
     const args = {
       index: i,
-      last: false,
     };
     // 默认文件和undefined文件不为空，关闭时需要提示是否保存
-    if (fileList[i].path.length === 0 || fileList[i].path === 'undefined') {
+    if (fileList[i].path === 'undefined') {
       if (!fileList[i].empty) {
         showDialog = true;
       }
@@ -133,7 +144,7 @@ const closeFile = (_i) => {
       }
       if (response === 2) {
         let toSave = true;
-        if (fileList[i].path.length === 0 || fileList[i].path === 'untitled') {
+        if (fileList[i].path === 'untitled') {
           const path = dialog.showSaveDialog(BrowserWindow.getFocusedWindow(), {
             title: 'saveAs',
             defaultPath: './',
@@ -157,29 +168,17 @@ const closeFile = (_i) => {
             index += 1;
           }
           if (fileList.length === 1) {
-            args.last = true;
-            fileList.push({
-              path: '',
-              saved: 2,
-              empty: true,
-              closing: false,
-            });
+            newFile();
           }
           sendMessageToRenderer('file', ['saveAndClose', args]);
         }
       }
     }
-    if (closeFlag) {
-      fileList.splice(i, 1);
-      if (fileList.length === 0) {
-        args.last = true;
-        fileList.push({
-          path: '',
-          saved: 2,
-          empty: true,
-          closing: false,
-        });
+    if (closeFlag) {      
+      if (fileList.length === 1) {
+        newFile();
       }
+      fileList.splice(i, 1);
       if (index !== 0) {
         index -= 1;
       }
@@ -228,11 +227,14 @@ const open = () => {
       const args = {
         index,
         path: [],
+        num: [],
+        change: false,
       };
-      if (fileList[index].path.length !== 0 || fileList[index].saved !== 2) {
+      if (fileList[index].path !== 'untitled' || fileList[index].saved !== 2) {
         args.index += 1;
       } else {
-        fileList.shift();
+        fileList.splice(index, 1);
+        args.change = true;
       }
       for (let i = 0; i < filePaths.length; i += 1) {
         const flag = searchFile(filePaths[i]);
@@ -240,12 +242,15 @@ const open = () => {
           fileFound = flag;
         } else {
           args.path.push(filePaths[i]);
+          fileNum += 1;
+          args.num.push(fileNum);
           // 插入已打开的文件链表中
           fileList.splice(current, 0, {
             path: filePaths[i],
             saved: 2,
             empty: false,
             closing: false,
+            num: fileNum,
           });
           current += 1;
         }
@@ -286,7 +291,7 @@ exports.toPdf = () => {
 ipcMain.on('mainFile', (event, arg) => {
   let path;
   let result;
-
+  let num;
   switch (arg[0]) {
     // 文件为空时也一定被修改过
     case 'empty' :
@@ -298,8 +303,8 @@ ipcMain.on('mainFile', (event, arg) => {
       fileList[arg[1]].empty = false;
       break;
     case 'changeFocusedFile' :
-      path = arg[1];
-      result = searchFile(path);
+      num = arg[1];
+      result = searchNum(num);
       index = result;
       sendMessageToRenderer('file', ['focus', { index }]);
       break;
@@ -320,11 +325,13 @@ ipcMain.on('mainFile', (event, arg) => {
       result = searchFile(path);
       fileList.splice(result, 1);
       if (fileList.length === 0) {
+        fileNum += 1;
         fileList.push({
           path: '',
           saved: 2,
           empty: true,
           closing: false,
+          num: fileNum,
         });
       }
       if (result < index) {
@@ -336,6 +343,15 @@ ipcMain.on('mainFile', (event, arg) => {
       result = searchFile(path);
       fileList[result].saved = 0;
       fileList[result].closing = false;
+      break;
+    case 'openFail' :
+      let paths = arg[1];
+      for (let i = 0; i < paths.length; i += 1) {
+        result = searchFile(paths[i]);
+        if (result !== -1) {
+          fileList.splice(result, 1);
+        }
+      }
       break;
     default:
       break;

@@ -43,6 +43,12 @@ $('#editorContainer').on('input propertychange', 'textarea', () => {
   }
 });
 
+$('.inner-header').on('click', 'div', (event) => {
+  // 通知主进程聚焦点击的标签
+  const data = $(event.target).data('path') ? $(event.target).data('path') : $(event.target).parent().data('path');
+  ipcRenderer.send('mainFile', (event, ['changeFocusedFile', data]));
+});
+
 ipcRenderer.on('SC', (event, args) => {
   toolUtil[args](fileIndex);
 });
@@ -58,7 +64,3 @@ ipcRenderer.on('file', (event, args) => {
   }
   fileUtil[args[0]](args[1]);
 });
-
-const changeIndex = (i) => {
-  fileIndex = i;
-};

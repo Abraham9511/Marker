@@ -18,60 +18,97 @@ const addContent = (index, editorText, previewText) => {
   $('.preview').eq(index - 1).after(newPreview);
 };
 
+const newTab = (path, index, num) => {
+  const pathSplited = path.split('/');
+  const name = pathSplited[pathSplited.length - 1];
+  const newTitle1 = $('<div></div>');
+  newTitle1.addClass('title-container');
+  newTitle1.append($('<span></span>').text(name));
+  newTitle1.data('path', num);
+  const newTitle2 = $('<div></div>');
+  newTitle2.addClass('title-container');
+  newTitle2.append($('<span></span>').text(name));
+  newTitle2.data('path', num);
+  // 没有任何标签
+  if ($('.title-container').children().length === 0) {
+    $('#editorContainer').children('.inner-header').append(newTitle1);
+    $('#previewContainer').children('.inner-header').append(newTitle2);
+  }
+  else {
+    $('#editorContainer').children('.inner-header').children().eq(index - 1).after(newTitle1);
+    $('#previewContainer').children('.inner-header').children().eq(index - 1).after(newTitle2);
+  }
+};
+
 const fileUtil = {
   read: (args) => {
     const index = args.index;
     let current = index;
     const paths = args.path;
     const toShow = args.show;
+    const num = args.num;
+    const change = args.change;
     let previewText;
     async.eachSeries(paths, (path, callback) => {
       fs.readFile(path, (err, data) => {
         if (err) {
-          throw err;
+          // 将读取出错的序号抛出
+          callback(new Error(current));
         }
         // todo转换为markdown
         previewText = data;
-        if (current === 0) {
-          $('.editor').eq(0).val(data);
-          $('.preview').eq(0).text(previewText);
+        if (change && current === index) {
+          $('.editor').eq(index).val(data);
+          $('.preview').eq(index).text(previewText);
+          $('#editorContainer').children('.inner-header').children().eq(index).remove();
+          $('#previewContainer').children('.inner-header').children().eq(index).remove();
           reload(0);
         } else {
           addContent(current, data, previewText);
-          // 显示成功打开的第一个文件
-          if (toShow && current === index) {
-            // 通知主线程更改聚焦文件
-            ipcRenderer.send('mainFile', (event, ['changeFocusedFile', paths[0]]));
-          }
+        }
+        newTab(path, current, num[current - index]);
+        // 显示成功打开的第一个文件
+        if (toShow && current === index) {
+          // 通知主线程更改聚焦文件
+          ipcRenderer.send('mainFile', (event, ['changeFocusedFile', num[0]]));
         }
         current += 1;
         callback();
       });
-    }, (err) => {
-      console.log(err); // eslint-disable-line
+    }, (error) => {
+      if (error !== null) {
+        const number = parseInt(error.message, 10);
+        paths.splice(0, number - index);
+        ipcRenderer.send('mainFile', (event, ['openFail', paths]));
+      }
     });
   },
   save: (args) => {
     const index = args.index;
     const path = args.path;
+    const changeName = args.changeName;
     fs.writeFile(path, $('.preview').eq(index).text().toString(), (err) => {
       if (err) {
         // 将对应文件改为未保存
         ipcRenderer.send('mainFile', (event, ['saveFail', path]));
         throw err;
       }
+      if (changeName) {
+        const title = $('#editorContainer').children('.inner-header').children().eq(index);
+        const pathSplited = path.split('/');
+        title.children().text(pathSplited[pathSplited.length - 1]);
+      }
       ipcRenderer.send('mainFile', (event, ['saveSuccess', path]));
     });
   },
   newFile: (args) => {
     const index = args.index;
+    const num = args.num;
     if (index !== 0) {
       addContent(index, '', '');
     }
-    $('.editor').hide();
-    $('.editor').eq(index).show();
-    $('.preview').hide();
-    $('.preview').eq(index).show();
+    newTab('untitled', index, num);
+    ipcRenderer.send('mainFile', (event, ['changeFocusedFile', num]));
   },
   focus: (args) => {
     const index = args.index;
@@ -79,34 +116,27 @@ const fileUtil = {
     $('.editor').eq(index).show();
     $('.preview').hide();
     $('.preview').eq(index).show();
+    // 显示标签
+    $('.active-container').removeClass('active-container');
+    $('#editorContainer').children('.inner-header').children().eq(index).addClass('active-container');
+    $('#previewContainer').children('.inner-header').children().eq(index).addClass('active-container');
     reload(index);
   },
   close: (args) => {
     const index = args.index;
-    const isLast = args.last;
-    if (isLast === true) {
-      $('.editor').eq(index).val('');
-      $('.preview').eq(index).text('');
-      fileUtil.focus({ index: 0 });
-      // todo更改标签
+    $('#editorContainer').children('.inner-header').children().eq(index).remove();
+    $('#previewContainer').children('.inner-header').children().eq(index).remove();
+    $('.editor').eq(index).remove();
+    $('.preview').eq(index).remove();
+    if (index === 0) {
+      fileUtil.focus({ index });
     } else {
-      $('.editor').eq(index).remove();
-      $('.preview').eq(index).remove();
-      // todo删除标签
-      if (index === 0) {
-        fileUtil.focus({ index });
-      } else {
-        fileUtil.focus({ index: index - 1 });
-      }
+      fileUtil.focus({ index: index - 1 });
     }
   },
   saveAndClose: (args) => {
     const index = args.index;
     const path = args.path;
-    const isLast = args.last;
-    if (isLast) {
-      addContent(1, '', '');
-    }
     if (index !== 0) {
       fileUtil.focus({ index: index - 1 });
     } else {
@@ -120,6 +150,8 @@ const fileUtil = {
       }
       $('.editor').eq(index).remove();
       $('.preview').eq(index).remove();
+      $('#editorContainer').children('.inner-header').children().eq(index).remove();
+      $('#previewContainer').children('.inner-header').children().eq(index).remove();
       ipcRenderer.send('mainFile', (event, ['closeSuccess', path]));
     });
   },
