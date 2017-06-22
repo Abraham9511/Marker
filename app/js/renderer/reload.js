@@ -6,7 +6,9 @@
 // 当某行因输入过长而显示换行时，行号的显示位置有问题
 exports.reload = (fileIndex) => {
   const value = $('.editor').eq(fileIndex).val();
-  const hValue = require('./../parser/parser.js')(value);
+  const hValue = require('./../parser/parser.js').parser(value);
+  console.log('!!hValue!!');
+  console.log(hValue);
   $('.preview').eq(fileIndex).html(hValue);
   const result = $('.editor').eq(fileIndex).val().match(new RegExp('\n', 'g')); // eslint-disable-line
   const countOfReturn = !result ? 0 : result.length;
@@ -14,7 +16,7 @@ exports.reload = (fileIndex) => {
 
   // 根据行号的增减来增加或者减少行号元素
   // 如果当前没有内容，则不显示行号
-  if (hValue.length === 0) {
+  if (value.length === 0) {
     $('#lineNumber').children().remove();
     return true;
   }
