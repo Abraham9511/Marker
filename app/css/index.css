@@ -8,6 +8,14 @@ html, body, div, header, section, textarea {
   font-size: 0;
 }
 
+/*
+  用于在解析之后消除间距
+ */
+p {
+  margin: 0;
+  padding: 0;
+}
+
 html, body {
   height: 100%;
   width: 100%;

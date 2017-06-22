@@ -3,9 +3,7 @@
 
 exports.parser = (value) => {
 	// marked 用于解析文档为对应的html
-	// 使用bluebird将所有的内容Promise
-	// 使用ying模版引擎将html片段放在完整html文件中
-	var marked = require('marked');
+	const marked = require('marked');
 
 	marked.setOptions({
 	  renderer: new marked.Renderer(),
@@ -18,7 +16,7 @@ exports.parser = (value) => {
 	  smartypants: false,
 	  // 使用hightlight进行高亮
 	  highlight: function (code) {
-	      return require('highlight.js').highlightAuto(code).value;
+	     return require('highlight.js').highlightAuto(code).value;
 	  }
 	});
 
