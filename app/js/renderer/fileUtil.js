@@ -33,10 +33,11 @@ const newTab = (path, index, num) => {
   if ($('.title-container').children().length === 0) {
     $('#editorContainer').children('.inner-header').append(newTitle1);
     $('#previewContainer').children('.inner-header').append(newTitle2);
-  }
-  else {
-    $('#editorContainer').children('.inner-header').children().eq(index - 1).after(newTitle1);
-    $('#previewContainer').children('.inner-header').children().eq(index - 1).after(newTitle2);
+  } else {
+    $('#editorContainer').children('.inner-header').children().eq(index - 1)
+    .after(newTitle1);
+    $('#previewContainer').children('.inner-header').children().eq(index - 1)
+    .after(newTitle2);
   }
 };
 
@@ -60,8 +61,10 @@ const fileUtil = {
         if (change && current === index) {
           $('.editor').eq(index).val(data);
           $('.preview').eq(index).text(previewText);
-          $('#editorContainer').children('.inner-header').children().eq(index).remove();
-          $('#previewContainer').children('.inner-header').children().eq(index).remove();
+          $('#editorContainer').children('.inner-header').children().eq(index)
+          .remove();
+          $('#previewContainer').children('.inner-header').children().eq(index)
+          .remove();
           reload(0);
         } else {
           addContent(current, data, previewText);
@@ -118,14 +121,18 @@ const fileUtil = {
     $('.preview').eq(index).show();
     // 显示标签
     $('.active-container').removeClass('active-container');
-    $('#editorContainer').children('.inner-header').children().eq(index).addClass('active-container');
-    $('#previewContainer').children('.inner-header').children().eq(index).addClass('active-container');
+    $('#editorContainer').children('.inner-header').children().eq(index)
+    .addClass('active-container');
+    $('#previewContainer').children('.inner-header').children().eq(index)
+    .addClass('active-container');
     reload(index);
   },
   close: (args) => {
     const index = args.index;
-    $('#editorContainer').children('.inner-header').children().eq(index).remove();
-    $('#previewContainer').children('.inner-header').children().eq(index).remove();
+    $('#editorContainer').children('.inner-header').children().eq(index)
+    .remove();
+    $('#previewContainer').children('.inner-header').children().eq(index)
+    .remove();
     $('.editor').eq(index).remove();
     $('.preview').eq(index).remove();
     if (index === 0) {
@@ -150,8 +157,10 @@ const fileUtil = {
       }
       $('.editor').eq(index).remove();
       $('.preview').eq(index).remove();
-      $('#editorContainer').children('.inner-header').children().eq(index).remove();
-      $('#previewContainer').children('.inner-header').children().eq(index).remove();
+      $('#editorContainer').children('.inner-header').children().eq(index)
+      .remove();
+      $('#previewContainer').children('.inner-header').children().eq(index)
+      .remove();
       ipcRenderer.send('mainFile', (event, ['closeSuccess', path]));
     });
   },

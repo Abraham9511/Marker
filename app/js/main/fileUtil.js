@@ -59,7 +59,7 @@ const newFile = () => {
   });
   index += 1;
   sendMessageToRenderer('file', ['newFile', {
-    index: index,
+    index,
     num: fileNum,
   }]);
 };
@@ -174,7 +174,7 @@ const closeFile = (_i) => {
         }
       }
     }
-    if (closeFlag) {      
+    if (closeFlag) {
       if (fileList.length === 1) {
         newFile();
       }
@@ -292,6 +292,8 @@ ipcMain.on('mainFile', (event, arg) => {
   let path;
   let result;
   let num;
+  let paths;
+
   switch (arg[0]) {
     // 文件为空时也一定被修改过
     case 'empty' :
@@ -345,7 +347,7 @@ ipcMain.on('mainFile', (event, arg) => {
       fileList[result].closing = false;
       break;
     case 'openFail' :
-      let paths = arg[1];
+      paths = arg[1];
       for (let i = 0; i < paths.length; i += 1) {
         result = searchFile(paths[i]);
         if (result !== -1) {
