@@ -15,7 +15,7 @@ exports.parser = (value) => {
 	  pedantic: false,
 	  sanitize: true,
 	  smartLists: true,
-	  smartypants: false
+	  smartypants: false,
 	  // 使用hightlight进行高亮
 	  highlight: function (code) {
 	      return require('highlight.js').highlightAuto(code).value;
