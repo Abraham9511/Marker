@@ -97,8 +97,15 @@ exports.expandLine = (fileIndex) => {
   } else if (indexBeforeStart === indexBeforeEnd && indexAfterStart === indexAfterEnd) {
     // 说明这是第一次按行选择
     // 加1，使得高亮位于换行符后面
-    const index1 = (indexBeforeStart === -1) ? 0 : indexBeforeStart + 1;
+    let index1 = (indexBeforeStart === -1) ? 0 : indexBeforeStart + 1;
     const index2 = (indexAfterStart === -1) ? value.length : indexAfterStart;
+    /*
+    当光标位于该行结尾处时，
+    进行特殊处理
+     */
+    if (indexBeforeStart === indexAfterStart) {
+      index1 = value.lastIndexOf('\n', indexBeforeStart - 1);
+    }
     editor.setSelectionRange(index1, index2);
   } else {
     const index1 = (indexBeforeStart === -1) ? 0 : indexBeforeStart + 1;
@@ -124,8 +131,12 @@ exports.reduceLine = (fileIndex) => {
   } else if (indexAfterEnd === indexAfterStart) {
     // 仅有一行被选择
     editor.setSelectionRange(start, start);
-  } else {
-    // 多行被选择
+  } else if (indexAfterEnd === -1) {
+    // 多行选择且最后一行被选择
     editor.setSelectionRange(start, indexBeforeEnd);
+  } else {
+    // 多行且最后一行没被选择
+    const tempIndex = value.lastIndexOf('\n', indexBeforeEnd - 1);
+    editor.setSelectionRange(start, tempIndex);
   }
 };
