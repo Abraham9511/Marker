@@ -1,9 +1,5 @@
 // 实时渲染
 // 控制行号的显示与消失
-// bug
-// bug
-// bug
-// 当某行因输入过长而显示换行时，行号的显示位置有问题
 exports.reload = (fileIndex) => {
   // 保持行号和内容的位置同步
   $('#lineNumber').scrollTop($('.editor').eq(fileIndex).scrollTop());

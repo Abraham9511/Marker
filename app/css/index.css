@@ -114,6 +114,9 @@ html, body {
   display: block;
   outline: none;
   background-color: #434443;
+  /*增加横向滚动条*/
+  white-space: nowrap;
+  overflow: scroll;
 }
 
 /*当该行不足以存放整个句子时进行换行*/
