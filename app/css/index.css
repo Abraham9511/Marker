@@ -50,6 +50,13 @@ html, body {
 
 #lineNumber {
   background-color: #262821;
+  /*内容溢出时生成滚动条*/
+  overflow-y: scroll;
+}
+
+/*让滚动条不显示*/
+#lineNumber::-webkit-scrollbar {
+  display: none;
 }
 
 /*必须设置子元素字体大小不为零*/
@@ -122,6 +129,8 @@ html, body {
 
 #previewContainer .preview {
   background-color: #434443;
+  /*预览页面滚动*/
+  overflow-y: scroll;
 }
 
 /*

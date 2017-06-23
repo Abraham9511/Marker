@@ -5,6 +5,8 @@
 // bug
 // 当某行因输入过长而显示换行时，行号的显示位置有问题
 exports.reload = (fileIndex) => {
+  // 保持行号和内容的位置同步
+  $('#lineNumber').scrollTop($('.editor').eq(fileIndex).scrollTop());
   const value = $('.editor').eq(fileIndex).val();
   // 这里调用marked进行语法解析
   const hValue = require('./../parser/parser.js').parser(value);

@@ -51,6 +51,12 @@ $('.inner-header').on('click', 'div', (event) => {
   ipcRenderer.send('mainFile', (event, ['changeFocusedFile', data]));
 });
 
+// 监听编辑区的滚动条滚动，
+// 同时保持文字和行号位置的一致
+$('.editor').scroll( function () {
+  $('#lineNumber').scrollTop($(this).scrollTop());
+});
+
 // 监听快捷键操作
 ipcRenderer.on('SC', (event, args) => {
   toolUtil[args](fileIndex);
