@@ -91,6 +91,11 @@ const template = [
         accelerator: 'CommandOrControl+L',
         click() { selectionUtil.expandLine(); },
       },
+      {
+        label: 'Reduce Selection to Line',
+        accelerator: 'CommandOrControl+Shift+L',
+        click() { selectionUtil.reduceLine(); },
+      },
     ],
   },
   {

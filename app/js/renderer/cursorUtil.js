@@ -107,3 +107,25 @@ exports.expandLine = (fileIndex) => {
     editor.setSelectionRange(index1, index2);
   }
 };
+
+exports.reduceLine = (fileIndex) => {
+  const editor = $('.editor')[fileIndex];
+  const value = $('.editor').eq(fileIndex).val();
+  const start = editor.selectionStart;
+  const end = editor.selectionEnd;
+  const indexBeforeStart = value.lastIndexOf('\n', start);
+  const indexAfterStart = value.indexOf('\n', start);
+  const indexBeforeEnd = value.lastIndexOf('\n', end);
+  const indexAfterEnd = value.indexOf('\n', end);
+
+  // 说明没有内容被选择
+  if (start === end) {
+    return;
+  } else if (indexAfterEnd === indexAfterStart) {
+    // 仅有一行被选择
+    editor.setSelectionRange(start, start);
+  } else {
+    // 多行被选择
+    editor.setSelectionRange(start, indexBeforeEnd);
+  }
+};
