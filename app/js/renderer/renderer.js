@@ -9,7 +9,9 @@ const ipcRenderer = electron.ipcRenderer;
 // 文件的索引
 let fileIndex = 0;
 
+// 这里使用事件代理
 $('.outer-header').delegate('img', 'click', function click() {
+  // 由于这里需要用到this，所以不实用箭头函数
   const index = $(this).attr('data');
   if (index === 'bold') {
     toolUtil.addBold(fileIndex);
@@ -49,10 +51,12 @@ $('.inner-header').on('click', 'div', (event) => {
   ipcRenderer.send('mainFile', (event, ['changeFocusedFile', data]));
 });
 
+// 监听快捷键操作
 ipcRenderer.on('SC', (event, args) => {
   toolUtil[args](fileIndex);
 });
 
+// 监听按行操作
 ipcRenderer.on('SE', (event, args) => {
   cursorUtil[args](fileIndex);
 });

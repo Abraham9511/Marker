@@ -17,13 +17,13 @@ const addContent = (index, editorText, previewText) => {
   if (index !== 0) {
     $('.editor').eq(index - 1).after(newEditor);
     $('.preview').eq(index - 1).after(newPreview);
-  }
-  else {
+  } else {
     $('#editorContainer').append(newEditor);
     $('#previewContainer').append(newPreview);
   }
 };
 
+// 新建tab
 const newTab = (path, index, num) => {
   const pathSplited = path.split('/');
   const name = pathSplited[pathSplited.length - 1];
@@ -48,6 +48,7 @@ const newTab = (path, index, num) => {
 };
 
 const fileUtil = {
+  // 打开文件
   read: (args) => {
     const index = args.index;
     let current = index;
@@ -92,6 +93,7 @@ const fileUtil = {
       }
     });
   },
+  // 保存文件
   save: (args) => {
     const index = args.index;
     const path = args.path;
@@ -114,6 +116,7 @@ const fileUtil = {
       }
     });
   },
+  // 新建文件
   newFile: (args) => {
     const index = args.index;
     const num = args.num;
@@ -121,6 +124,7 @@ const fileUtil = {
     addContent(index, '', '');
     ipcRenderer.send('mainFile', (event, ['changeFocusedFile', num]));
   },
+  // 文件聚焦
   focus: (args) => {
     const index = args.index;
     $('.editor').hide();
@@ -135,6 +139,7 @@ const fileUtil = {
     .addClass('active-container');
     reload(index);
   },
+  // 关闭文件
   close: (args) => {
     const index = args.index;
     $('#editorContainer').children('.inner-header').children().eq(index)
@@ -149,6 +154,7 @@ const fileUtil = {
       fileUtil.focus({ index: index - 1 });
     }
   },
+  // 保存并关闭文件
   saveAndClose: (args) => {
     const index = args.index;
     const path = args.path;
@@ -176,6 +182,5 @@ const fileUtil = {
     });
   },
 };
-
 
 exports.fileUtil = fileUtil;

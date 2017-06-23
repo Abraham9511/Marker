@@ -2,6 +2,7 @@ const reload = require('./reload').reload;
 
 /**
  * 用于光标的显示
+ * @param {[number]} index [文件标号]
  * @param  {[number]} start [起始位置]
  * @param  {[number]} end   [结束位置]
  */
@@ -19,6 +20,7 @@ const setSelection = (index, start, end) => {
 
 /**
  * 用于点击图标进行文字的快捷输入
+ * @param {[number]} index [文件标号]
  * @param  {[string]} content [文字内容]
  * @param  {[number]} start   [选择区的开始]
  * @param  {[number]} end     [选择区的结束]

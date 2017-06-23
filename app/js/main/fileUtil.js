@@ -26,6 +26,7 @@ let fileNum = 1;
 // 用于关闭所有文件
 let nextToClose;
 
+// 搜索文件
 const searchFile = (path) => {
   let i = 0;
   while (i < fileList.length) {
@@ -38,6 +39,7 @@ const searchFile = (path) => {
   return -1;
 };
 
+// 搜索文件标号
 const searchNum = (number) => {
   let i = 0;
   while (i < fileList.length) {
@@ -50,6 +52,7 @@ const searchNum = (number) => {
   return -1;
 };
 
+// 打开对话框
 const showPdfDialog = (index) => {
   dialog.showSaveDialog(BrowserWindow.getFocusedWindow(), {
     title: 'toPdf',
@@ -62,12 +65,13 @@ const showPdfDialog = (index) => {
       // 选择文件时点击取消会导致undifined
     if (typeof (filename) !== 'undefined') {
       markdownpdf().from(fileList[index].path).to(filename, function () {
-        console.log("Done")
-      })
+        console.log("Done");
+      });
     }
   });
 }
 
+// 新建文件
 const newFile = () => {
   // 递增文件编号
   fileNum += 1;
@@ -86,6 +90,7 @@ const newFile = () => {
   }]);
 };
 
+// 另存为
 const saveAs = (_i, _type) => {
   const i = (typeof (_i) === 'undefined') ? index : _i;
   const type = (typeof (_type) === 'undefined') ? 0 : _type;
@@ -111,6 +116,7 @@ const saveAs = (_i, _type) => {
   });
 };
 
+// 保存文件
 const save = (_i, _type) => {
   const i = (typeof (_i) === 'undefined') ? index : _i;
   const type = (typeof (_type) === 'undefined') ? 0 : _type;
@@ -131,12 +137,14 @@ const save = (_i, _type) => {
   }
 };
 
+// 全部保存
 const saveAll = () => {
   for (let i = 0; i < fileList.length; i += 1) {
     save(i);
   }
 };
 
+// 关闭文件
 const closeFile = (_i) => {
   const i = (typeof (_i) === 'undefined') ? index : _i;
   // 如果文件不是正在关闭
@@ -200,7 +208,6 @@ const closeFile = (_i) => {
             newFile();
           }
           sendMessageToRenderer('file', ['saveAndClose', args]);
-          
         }
       }
     }
@@ -217,6 +224,7 @@ const closeFile = (_i) => {
   }
 };
 
+// 关闭所有文件
 const clossAll = () => {
   const length = fileList.length;
   nextToClose = 0;
@@ -226,25 +234,26 @@ const clossAll = () => {
   nextToClose = 0;
 };
 
+// 新建一个tab
 const newTab = () => {
   newFile();
 };
 
+// 生成pdf
 const toPdf = () => {
   if (fileList[index].path === 'untitled') {
     saveAs(index, 2);
-  }
-  else {
+  } else {
     // 文件未保存
     if (fileList[index].saved === 0) {
       save(index, 2);
-    }
-    else {
+    } else {
       showPdfDialog(index);
     }
   }
 };
 
+// 打开文件
 const open = () => {
   dialog.showOpenDialog(BrowserWindow.getFocusedWindow(), {
     title: 'open file',
@@ -313,10 +322,11 @@ const open = () => {
   });
 };
 
-
+// 修改聚焦文件
 exports.changeFocusedFile = (i) => {
   index = i;
 };
+
 exports.newFile = newFile;
 exports.open = open;
 exports.save = save;
@@ -400,4 +410,3 @@ ipcMain.on('mainFile', (event, arg) => {
       break;
   }
 });
-

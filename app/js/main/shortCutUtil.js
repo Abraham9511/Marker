@@ -82,6 +82,7 @@ const addLineThisSC = () => {
   });
 };
 
+// 注册快捷键
 const registerSC = () => {
   getWebContent();
   addBoldSC();
@@ -98,6 +99,7 @@ const registerSC = () => {
   addLineThisSC();
 };
 
+// 取消快捷键注册
 const unregisterSC = () => {
   globalShortcut.unregisterAll();
 };

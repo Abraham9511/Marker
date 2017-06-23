@@ -6,6 +6,7 @@
 // 当某行因输入过长而显示换行时，行号的显示位置有问题
 exports.reload = (fileIndex) => {
   const value = $('.editor').eq(fileIndex).val();
+  // 这里调用marked进行语法解析
   const hValue = require('./../parser/parser.js').parser(value);
 
   $('.preview').eq(fileIndex).html(hValue);
@@ -20,6 +21,7 @@ exports.reload = (fileIndex) => {
     return true;
   }
 
+  // 通过换行符来控制行号
   while (countOfChildren !== countOfReturn + 1) {
     if (countOfChildren < countOfReturn + 1) {
       $('<div></div>').html(countOfChildren + 1).appendTo($('#lineNumber'));
