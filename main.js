@@ -78,6 +78,8 @@ function createWindow() {
 
 app.on('ready', createWindow);
 
+// 当应用即将退出时，
+// 注销全局快捷键
 app.on('will-quit', () => {
   shortCutUtil.unregisterSC();
 });

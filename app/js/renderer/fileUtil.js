@@ -9,11 +9,13 @@ const ipcRenderer = electron.ipcRenderer;
 const addContent = (index, editorText, previewText) => {
   const newEditor = $('<textarea></textarea>').val(editorText);
   const newPreview = $('<div></div>').text(previewText);
+
   newPreview.addClass('preview');
   newEditor.addClass('editor');
   newEditor.css('display', 'none');
   newPreview.css('display', 'none');
   newEditor.attr('autofocus', 'autofocus');
+
   if (index !== 0) {
     $('.editor').eq(index - 1).after(newEditor);
     $('.preview').eq(index - 1).after(newPreview);
@@ -28,10 +30,11 @@ const newTab = (path, index, num) => {
   const pathSplited = path.split('/');
   const name = pathSplited[pathSplited.length - 1];
   const newTitle1 = $('<div></div>');
+  const newTitle2 = $('<div></div>');
+
   newTitle1.addClass('title-container');
   newTitle1.append($('<span></span>').text(name));
   newTitle1.data('path', num);
-  const newTitle2 = $('<div></div>');
   newTitle2.addClass('title-container');
   newTitle2.append($('<span></span>').text(name));
   newTitle2.data('path', num);
@@ -57,6 +60,7 @@ const fileUtil = {
     const num = args.num;
     const change = args.change;
     let previewText;
+
     async.eachSeries(paths, (path, callback) => {
       fs.readFile(path, (err, data) => {
         if (err) {
@@ -99,6 +103,7 @@ const fileUtil = {
     const path = args.path;
     const changeName = args.changeName;
     const type = args.type;
+
     fs.writeFile(path, $('.editor').eq(index).val().toString(), (err) => {
       if (err) {
         // 将对应文件改为未保存
@@ -120,6 +125,7 @@ const fileUtil = {
   newFile: (args) => {
     const index = args.index;
     const num = args.num;
+
     newTab('untitled', index, num);
     addContent(index, '', '');
     ipcRenderer.send('mainFile', (event, ['changeFocusedFile', num]));
@@ -127,6 +133,7 @@ const fileUtil = {
   // 文件聚焦
   focus: (args) => {
     const index = args.index;
+
     $('.editor').hide();
     $('.editor').eq(index).show();
     $('.preview').hide();
@@ -142,6 +149,7 @@ const fileUtil = {
   // 关闭文件
   close: (args) => {
     const index = args.index;
+
     $('#editorContainer').children('.inner-header').children().eq(index)
     .remove();
     $('#previewContainer').children('.inner-header').children().eq(index)
@@ -158,6 +166,7 @@ const fileUtil = {
   saveAndClose: (args) => {
     const index = args.index;
     const path = args.path;
+
     if (index !== 0) {
       fileUtil.focus({ index: index - 1 });
     } else {

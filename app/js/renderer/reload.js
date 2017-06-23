@@ -1,11 +1,15 @@
+const parser = require('./../parser/parser.js');
+
 // 实时渲染
 // 控制行号的显示与消失
 exports.reload = (fileIndex) => {
   // 保持行号和内容的位置同步
-  $('#lineNumber').scrollTop($('.editor').eq(fileIndex).scrollTop());
+  const top = $('.editor').eq(fileIndex).scrollTop()
+  $('#lineNumber').scrollTop(top);
+
   const value = $('.editor').eq(fileIndex).val();
   // 这里调用marked进行语法解析
-  const hValue = require('./../parser/parser.js').parser(value);
+  const hValue = parser.parser(value);
 
   $('.preview').eq(fileIndex).html(hValue);
   const result = $('.editor').eq(fileIndex).val().match(new RegExp('\n', 'g')); // eslint-disable-line

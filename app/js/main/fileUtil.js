@@ -42,6 +42,7 @@ const searchFile = (path) => {
 // 搜索文件标号
 const searchNum = (number) => {
   let i = 0;
+
   while (i < fileList.length) {
     if (fileList[i].num === number) {
       return i;
@@ -94,6 +95,7 @@ const newFile = () => {
 const saveAs = (_i, _type) => {
   const i = (typeof (_i) === 'undefined') ? index : _i;
   const type = (typeof (_type) === 'undefined') ? 0 : _type;
+
   dialog.showSaveDialog(BrowserWindow.getFocusedWindow(), {
     title: 'saveAs',
     defaultPath: './',
@@ -120,6 +122,7 @@ const saveAs = (_i, _type) => {
 const save = (_i, _type) => {
   const i = (typeof (_i) === 'undefined') ? index : _i;
   const type = (typeof (_type) === 'undefined') ? 0 : _type;
+
   // 文件是否保存过
   if (fileList[i].saved === 0) {
     // 文件路径为空或者untitled时，文件未被保存过，需另存为
@@ -147,6 +150,7 @@ const saveAll = () => {
 // 关闭文件
 const closeFile = (_i) => {
   const i = (typeof (_i) === 'undefined') ? index : _i;
+
   // 如果文件不是正在关闭
   if (!fileList[i].closing) {
     let showDialog = false;
@@ -282,6 +286,7 @@ const open = () => {
         num: [],
         change: false,
       };
+
       if (fileList[index].path !== 'untitled' || fileList[index].saved !== 2) {
         args.index += 1;
       } else {
