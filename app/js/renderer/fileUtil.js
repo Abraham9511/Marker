@@ -14,8 +14,14 @@ const addContent = (index, editorText, previewText) => {
   newEditor.css('display', 'none');
   newPreview.css('display', 'none');
   newEditor.attr('autofocus', 'autofocus');
-  $('.editor').eq(index - 1).after(newEditor);
-  $('.preview').eq(index - 1).after(newPreview);
+  if (index !== 0) {
+    $('.editor').eq(index - 1).after(newEditor);
+    $('.preview').eq(index - 1).after(newPreview);
+  }
+  else {
+    $('#editorContainer').append(newEditor);
+    $('#previewContainer').append(newPreview);
+  }
 };
 
 const newTab = (path, index, num) => {
@@ -90,7 +96,8 @@ const fileUtil = {
     const index = args.index;
     const path = args.path;
     const changeName = args.changeName;
-    fs.writeFile(path, $('.preview').eq(index).text().toString(), (err) => {
+    const type = args.type;
+    fs.writeFile(path, $('.editor').eq(index).val().toString(), (err) => {
       if (err) {
         // 将对应文件改为未保存
         ipcRenderer.send('mainFile', (event, ['saveFail', path]));
@@ -102,15 +109,16 @@ const fileUtil = {
         title.children().text(pathSplited[pathSplited.length - 1]);
       }
       ipcRenderer.send('mainFile', (event, ['saveSuccess', path]));
+      if (type === 2) {
+        ipcRenderer.send('mainFile', (event, ['toPdf', path]));
+      }
     });
   },
   newFile: (args) => {
     const index = args.index;
     const num = args.num;
-    if (index !== 0) {
-      addContent(index, '', '');
-    }
     newTab('untitled', index, num);
+    addContent(index, '', '');
     ipcRenderer.send('mainFile', (event, ['changeFocusedFile', num]));
   },
   focus: (args) => {
@@ -147,7 +155,10 @@ const fileUtil = {
     if (index !== 0) {
       fileUtil.focus({ index: index - 1 });
     } else {
-      fileUtil.focus({ index: index + 1 });
+      if ($('.editor').length > 1) {
+        console.log('here');
+        fileUtil.focus({ index: index + 1 });
+      }
     }
     fs.writeFile(path, $('.preview').eq(index).text().toString(), (err) => {
       if (err) {

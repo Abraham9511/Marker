@@ -2,6 +2,8 @@ const dialog = require('electron').dialog;
 const sendMessageToRendererUtil = require('./sendMessageToRendererUtil');
 const ipcMain = require('electron').ipcMain;
 const BrowserWindow = require('electron').BrowserWindow;
+const markdownpdf = require('markdown-pdf');
+const fs = require('fs');
 // const async = require('async');
 
 const sendMessageToRenderer = sendMessageToRendererUtil.sendMessageToRenderer;
@@ -10,7 +12,7 @@ const sendMessageToRenderer = sendMessageToRendererUtil.sendMessageToRenderer;
 const fileList = new Array({
   path: 'untitled',
   // 默认为已保存
-  // 0为保存 1为保存中 2为已保存
+  // 0未保存 1为保存中 2为已保存
   saved: 2,
   empty: true,
   closing: false,
@@ -21,6 +23,8 @@ const fileList = new Array({
 // 当前聚焦的文件索引
 let index = 0;
 let fileNum = 1;
+// 用于关闭所有文件
+let nextToClose;
 
 const searchFile = (path) => {
   let i = 0;
@@ -46,6 +50,24 @@ const searchNum = (number) => {
   return -1;
 };
 
+const showPdfDialog = (index) => {
+  dialog.showSaveDialog(BrowserWindow.getFocusedWindow(), {
+    title: 'saveAs',
+    defaultPath: './',
+    filters: [{
+      name: 'pdf',
+      extensions: ['pdf'],
+    }],
+  }, (filename) => {
+      // 选择文件时点击取消会导致undifined
+    if (typeof (filename) !== 'undefined') {
+      markdownpdf().from(fileList[index].path).to(filename, function () {
+        console.log("Done")
+      })
+    }
+  });
+}
+
 const newFile = () => {
   // 递增文件编号
   fileNum += 1;
@@ -64,8 +86,9 @@ const newFile = () => {
   }]);
 };
 
-const saveAs = (_i) => {
+const saveAs = (_i, _type) => {
   const i = (typeof (_i) === 'undefined') ? index : _i;
+  const type = (typeof (_type) === 'undefined') ? 0 : _type;
   dialog.showSaveDialog(BrowserWindow.getFocusedWindow(), {
     title: 'saveAs',
     defaultPath: './',
@@ -81,25 +104,28 @@ const saveAs = (_i) => {
         path: filename,
         index: i,
         changeName: true,
+        type: type,
       }]);
       fileList[i].saved = 1;
     }
   });
 };
 
-const save = (_i) => {
+const save = (_i, _type) => {
   const i = (typeof (_i) === 'undefined') ? index : _i;
+  const type = (typeof (_type) === 'undefined') ? 0 : _type;
   // 文件是否保存过
   if (fileList[i].saved === 0) {
     // 文件路径为空或者untitled时，文件未被保存过，需另存为
     if (fileList[i].path === 'untitled') {
-      saveAs(i);
+      saveAs(i, type);
     } else {
       // 保存中
       fileList[i].saved = 1;
       sendMessageToRenderer('file', ['save', {
         path: fileList[i].path,
         index: i,
+        type: type,
       }]);
     }
   }
@@ -141,6 +167,7 @@ const closeFile = (_i) => {
       });
       if (response !== 0) {
         closeFlag = false;
+        nextToClose++;
       }
       if (response === 2) {
         let toSave = true;
@@ -168,9 +195,11 @@ const closeFile = (_i) => {
             index += 1;
           }
           if (fileList.length === 1) {
+            index--;
             newFile();
           }
           sendMessageToRenderer('file', ['saveAndClose', args]);
+          
         }
       }
     }
@@ -189,9 +218,11 @@ const closeFile = (_i) => {
 
 const clossAll = () => {
   const length = fileList.length;
+  nextToClose = 0;
   for (let i = 0; i < length; i += 1) {
-    closeFile(0);
+    closeFile(nextToClose);
   }
+  nextToClose = 0;
 };
 
 const newTab = () => {
@@ -199,7 +230,18 @@ const newTab = () => {
 };
 
 const toPdf = () => {
-  console.log('toPdf...'); // eslint-disable-line
+  if (fileList[index].path === 'untitled') {
+    saveAs(index, 2);
+  }
+  else {
+    // 文件未保存
+    if (fileList[index].saved === 0) {
+      save(index, 2);
+    }
+    else {
+      showPdfDialog(index);
+    }
+  }
 };
 
 const open = () => {
@@ -282,10 +324,7 @@ exports.saveAll = saveAll;
 exports.closeFile = closeFile;
 exports.clossAll = clossAll;
 exports.newTab = newTab;
-
-exports.toPdf = () => {
-  console.log('toPdf...'); // eslint-disable-line
-};
+exports.toPdf = toPdf;
 
 // 监听文件修改的信息
 ipcMain.on('mainFile', (event, arg) => {
@@ -327,15 +366,11 @@ ipcMain.on('mainFile', (event, arg) => {
       result = searchFile(path);
       fileList.splice(result, 1);
       if (fileList.length === 0) {
-        fileNum += 1;
-        fileList.push({
-          path: '',
-          saved: 2,
-          empty: true,
-          closing: false,
-          num: fileNum,
-        });
+        // 通过更改index为-1
+        index = -1;
+        newFile();
       }
+      nextToClose--;
       if (result < index) {
         index -= 1;
       }
@@ -354,6 +389,11 @@ ipcMain.on('mainFile', (event, arg) => {
           fileList.splice(result, 1);
         }
       }
+      break;
+    case 'toPdf' :
+      path = arg[1];
+      result = searchFile(path);
+      showPdfDialog(result);
       break;
     default:
       break;
