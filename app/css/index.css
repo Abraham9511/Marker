@@ -6,14 +6,7 @@ html, body, div, header, section, textarea {
     消除元素间因空格而引起的间隙
     */
   font-size: 0;
-}
-
-/*
-  用于在解析之后消除间距
- */
-p {
-  margin: 0;
-  padding: 0;
+  color: #ffffff;
 }
 
 html, body {
@@ -71,6 +64,7 @@ html, body {
   /*让这两个元素平分剩下的空间*/
   flex-grow: 1;
   flex-basis: 0;
+  flex-shrink: 0;
   background-color: #262821;
 }
 
@@ -126,4 +120,13 @@ html, body {
 
 #previewContainer .preview {
   background-color: #434443;
+}
+
+/*
+消除预览界面的第一个元素的上外边框
+同时增加上内边框
+ */
+#previewContainer .preview>*:first-child {
+  margin-top: 0;
+  padding-top: 14px;
 }

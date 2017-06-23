@@ -7,8 +7,7 @@
 exports.reload = (fileIndex) => {
   const value = $('.editor').eq(fileIndex).val();
   const hValue = require('./../parser/parser.js').parser(value);
-  console.log('!!hValue!!');
-  console.log(hValue);
+
   $('.preview').eq(fileIndex).html(hValue);
   const result = $('.editor').eq(fileIndex).val().match(new RegExp('\n', 'g')); // eslint-disable-line
   const countOfReturn = !result ? 0 : result.length;
