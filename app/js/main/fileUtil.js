@@ -52,7 +52,7 @@ const searchNum = (number) => {
 
 const showPdfDialog = (index) => {
   dialog.showSaveDialog(BrowserWindow.getFocusedWindow(), {
-    title: 'saveAs',
+    title: 'toPdf',
     defaultPath: './',
     filters: [{
       name: 'pdf',
@@ -156,6 +156,7 @@ const closeFile = (_i) => {
       showDialog = true;
     }
     if (showDialog) {
+      sendMessageToRenderer('file', ['focus', { index: i }]);
       const response = dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
         type: 'question',
         buttons: ['不保存', '取消', '保存'],
