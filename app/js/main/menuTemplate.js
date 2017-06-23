@@ -119,27 +119,6 @@ const template = [
     ],
   },
   {
-    label: 'Setting',
-    submenu: [
-      {
-        label: 'Theme',
-      },
-      {
-        label: 'Font Family',
-      },
-      {
-        label: 'lineWrapping',
-        type: 'checkbox',
-        checked: true,
-      },
-      {
-        label: 'lineNumbers',
-        type: 'checkbox',
-        checked: true,
-      },
-    ],
-  },
-  {
     label: 'Help',
     submenu: [
       {
