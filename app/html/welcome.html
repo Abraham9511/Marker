@@ -24,4 +24,14 @@
       <img src="../../public/github.svg" alt="" class="github">
     </div>
   </body>
+
+  <!-- 解决引进jquery的bug -->
+  <!-- http://stackoverflow.com/questions/32621988/electron-jquery-is-not-defined -->
+  <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+  <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
+  <script>
+    $(document).ready(() => {
+      require('../js/welcome/welcome.js');
+    })
+  </script>
 </html>
