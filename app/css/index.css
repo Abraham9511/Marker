@@ -43,6 +43,8 @@ html, body {
 #lineNumberContainer {
   height: 100%;
   width: 40px;
+  /*不被压缩*/
+  flex-shrink: 0;
 }
 
 #lineNumberContainer .inner-header {
