@@ -7,6 +7,18 @@ exports.reload = (fileIndex) => {
   const top = $('.editor').eq(fileIndex).scrollTop()
   $('#lineNumber').scrollTop(top);
 
+  const fontsize = $('.editor').css('font-size');
+  const fontsizeNumber = parseFloat(fontsize);
+  const unit = fontsize.slice(-2);
+  // 先进行数字的乘法法运算
+  // 再进行字符串的连接操作
+  const lineHeight = fontsizeNumber * 1.2 + unit;
+
+  // 设置行号和编辑区的line-height
+  // 防止中英文字符高度的不一致
+  $('#lineNumber div').css('line-height', lineHeight);
+  $('.editor').css('line-height', lineHeight);
+
   const value = $('.editor').eq(fileIndex).val();
   // 这里调用marked进行语法解析
   const hValue = parser.parser(value);
