@@ -1,24 +1,25 @@
+<!-- 编辑器页面 -->
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8">
     <title>Marker</title>
-    <link rel="stylesheet" type="text/css" href="./css/index.css">
+    <link rel="stylesheet" type="text/css" href="../css/index.css">
   </head>
 
   <body>
     <header class="outer-header">
       <!-- 图标部分：用于处理markdown输入 -->
-      <img src="../public/bold.svg" data="bold" title="CmdOrCtrl+B">
-      <img src="../public/italic.svg" data="italic" title="CmdOrCtrl+I">
-      <img src="../public/link.svg" data="link" title="CmdOrCtrl+H">
-      <img src="../public/quotation.svg" data="quotation" title="CmdOrCtrl+Q">
-      <img src="../public/code.svg" data="code" title="CmdOrCtrl+K">
-      <img src="../public/img.svg" data="img" title="CmdOrCtrl+G">
-      <img src="../public/orderlist.svg" data="orderlist" title="CmdOrCtrl+O">
-      <img src="../public/list.svg" data="list" title="CmdOrCtrl+U">
-      <img src="../public/title.svg" data="title" title="CmdOrCtrl+T">
-      <img src="../public/line.svg" data="line" title="CmdOrCtrl+R">
+      <img src="../../public/bold.svg" data="bold" title="CmdOrCtrl+B">
+      <img src="../../public/italic.svg" data="italic" title="CmdOrCtrl+I">
+      <img src="../../public/link.svg" data="link" title="CmdOrCtrl+H">
+      <img src="../../public/quotation.svg" data="quotation" title="CmdOrCtrl+Q">
+      <img src="../../public/code.svg" data="code" title="CmdOrCtrl+K">
+      <img src="../../public/img.svg" data="img" title="CmdOrCtrl+G">
+      <img src="../../public/orderlist.svg" data="orderlist" title="CmdOrCtrl+O">
+      <img src="../../public/list.svg" data="list" title="CmdOrCtrl+U">
+      <img src="../../public/title.svg" data="title" title="CmdOrCtrl+T">
+      <img src="../../public/line.svg" data="line" title="CmdOrCtrl+R">
     </header>
 
     <div id="page">
@@ -56,10 +57,10 @@
   <!-- 解决引进jquery的bug -->
   <!-- http://stackoverflow.com/questions/32621988/electron-jquery-is-not-defined -->
   <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
-  <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
   <script>
     $(document).ready(() => {
-      require('./js/renderer/renderer.js');
+      require('../js/renderer/renderer.js');
     })
   </script>
 </html>

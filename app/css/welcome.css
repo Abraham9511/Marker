@@ -1,0 +1,13 @@
+html, div {
+  margin: 0;
+  padding: 0;
+}
+
+div {
+  text-align: center;
+  font-size: 14px;
+}
+
+.marker {
+  font-size: 30px;
+}

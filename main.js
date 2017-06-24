@@ -47,11 +47,21 @@ function createWindow() {
     }
   });
 
+  // 一开始先显示欢迎页面
+  // 1s后再显示编辑器页面
   mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'app/index.html'),
+    pathname: path.join(__dirname, 'app/html/welcome.html'),
     protocol: 'file:',
     slashes: true,
   }));
+
+  setTimeout(() => {
+    mainWindow.loadURL(url.format({
+      pathname: path.join(__dirname, 'app/html/index.html'),
+      protocol: 'file',
+      slashes: true,
+    }));
+  }, 1000);
 
   // 打开终端
   mainWindow.webContents.openDevTools();
