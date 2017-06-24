@@ -159,7 +159,7 @@ const fileUtil = {
   },
   // 关闭文件
   close: (args) => {
-    const index = args.index;
+    let index = args.index;
 
     $('#editorContainer').children('.inner-header').children().eq(index)
     .remove();
