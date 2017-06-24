@@ -42,7 +42,7 @@ html, body {
 
 #lineNumberContainer {
   height: 100%;
-  width: 30px;
+  width: 40px;
 }
 
 #lineNumberContainer .inner-header {
@@ -117,7 +117,7 @@ html, body {
   background-color: #434443;
   /*增加横向滚动条*/
   white-space: nowrap;
-  overflow: scroll;
+  overflow: auto;
 }
 
 /*当该行不足以存放整个句子时进行换行*/
@@ -128,13 +128,15 @@ html, body {
 #scrollBarContainer {
   height: 100%;
   width: 5px;
-  background-color: #262821
+  background-color: #262821;
+  /*不被压缩*/
+  flex-shrink: 0;
 }
 
 #previewContainer .preview {
   background-color: #434443;
   /*预览页面滚动*/
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 /*
