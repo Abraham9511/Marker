@@ -168,7 +168,10 @@ const closeFile = (_i) => {
       showDialog = true;
     }
     if (showDialog) {
-      sendMessageToRenderer('file', ['focus', { index: i }]);
+      sendMessageToRenderer('file', ['focus', {
+        index: i , 
+        path: fileList[i].path,
+      }]);
       const response = dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
         type: 'question',
         buttons: ['不保存', '取消', '保存'],
@@ -324,7 +327,10 @@ const openFileWithPaths = (paths) => {
     args.show = true;
   } else {
     args.show = false;
-    sendMessageToRenderer('file', ['focus', { index: fileFound }]);
+    sendMessageToRenderer('file', ['focus', {
+      index: fileFound,
+      path: fileList[fileFound].path,
+    }]);
   }
   if (args.path.length !== 0) {
     sendMessageToRenderer('file', ['read', args]);
