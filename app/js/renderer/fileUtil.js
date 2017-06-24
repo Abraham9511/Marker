@@ -27,7 +27,10 @@ const addContent = (index, editorText, previewText) => {
 
 // 新建tab
 const newTab = (path, index, num) => {
-  const pathSplited = path.split('/');
+  let pathSplited = path.split('/');
+  if (pathSplited.length === 1) {
+    pathSplited = path.split('\\');
+  }
   const name = pathSplited[pathSplited.length - 1];
   const newTitle1 = $('<div></div>');
   const newTitle2 = $('<div></div>');
@@ -112,7 +115,10 @@ const fileUtil = {
       }
       if (changeName) {
         let title = $('#editorContainer').children('.inner-header').children().eq(index);
-        const pathSplited = path.split('/');
+        let pathSplited = path.split('/');
+          if (pathSplited.length === 1) {
+          pathSplited = path.split('\\');
+        }
         title.children().text(pathSplited[pathSplited.length - 1]);
         title = $('#previewContainer').children('.inner-header').children().eq(index);
         title.children().text(pathSplited[pathSplited.length - 1]);
