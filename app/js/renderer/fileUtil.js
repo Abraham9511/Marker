@@ -159,7 +159,8 @@ const fileUtil = {
   },
   // 关闭文件
   close: (args) => {
-    let index = args.index;
+    const index = args.index;
+    const focusPath = args.focusPath;
 
     $('#editorContainer').children('.inner-header').children().eq(index)
     .remove();
@@ -167,27 +168,38 @@ const fileUtil = {
     .remove();
     $('.editor').eq(index).remove();
     $('.preview').eq(index).remove();
-    if (index !== 0) {
-      index -= 1;
+    if (index === 0) {
+      fileUtil.focus({
+        index,
+        path: focusPath,
+       });
+    } else {
+      fileUtil.focus({
+        index: index - 1,
+        path: focusPath,
+      });
     }
-    const num = $('#editorContainer').children('.inner-header').children().eq(index).data('path');
-    console.log(num);
-    ipcRenderer.send('mainFile', (event, ['changeFocusedFile', num]));
   },
   // 保存并关闭文件
   saveAndClose: (args) => {
     const index = args.index;
     const path = args.path;
-    let num;
+    const focusPath = args.focusPath;
 
     if (index !== 0) {
-      num = $('#editorContainer').children('.inner-header').children().eq(index-1).data('path');
+      fileUtil.focus({
+        index: index - 1,
+        path: focusPath.
+      });
     } else {
       if ($('.editor').length > 1) {
-        num = $('#editorContainer').children('.inner-header').children().eq(index+1).data('path');
+        console.log('here');
+        fileUtil.focus({
+          index: index + 1,
+          path: focusPath,
+        });
       }
     }
-    ipcRenderer.send('mainFile', (event, ['changeFocusedFile', num]));
     fs.writeFile(path, $('.preview').eq(index).text().toString(), (err) => {
       if (err) {
         // 将对应文件改为未保存

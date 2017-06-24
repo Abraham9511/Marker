@@ -214,6 +214,7 @@ const closeFile = (_i) => {
             index--;
             newFile();
           }
+          args.focusPath = fileList[index].path;
           sendMessageToRenderer('file', ['saveAndClose', args]);
         }
       }
@@ -226,6 +227,7 @@ const closeFile = (_i) => {
       if (index !== 0) {
         index -= 1;
       }
+      args.focusPath = fileList[index].path;
       sendMessageToRenderer('file', ['close', args]);
     }
   }
