@@ -3,6 +3,7 @@ const toolUtil = require('./toolUtil').toolUtil;
 const cursorUtil = require('./cursorUtil');
 const reload = require('./reload').reload;
 const fileUtil = require('./fileUtil').fileUtil;
+const fontsizeUtil = require('./fontsizeUtil');
 
 const ipcRenderer = electron.ipcRenderer;
 
@@ -65,6 +66,11 @@ ipcRenderer.on('SC', (event, args) => {
 // 监听按行操作
 ipcRenderer.on('SE', (event, args) => {
   cursorUtil[args](fileIndex);
+});
+
+// 监听字体变化
+ipcRenderer.on('FS', (event, args) => {
+  fontsizeUtil[args]();
 });
 
 // 监听file通道的上的信息，调用对应的文件操作函数

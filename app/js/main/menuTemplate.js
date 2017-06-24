@@ -1,6 +1,7 @@
 const electron = require('electron');
 const fileUtil = require('./fileUtil');
 const selectionUtil = require('./selectionUtil');
+const fontsizeUtil = require('./fontsizeUtil');
 
 const shell = electron.shell;
 
@@ -105,16 +106,24 @@ const template = [
         role: 'reload',
       },
       {
-        role: 'resetzoom',
-      },
-      {
-        role: 'zoomin',
-      },
-      {
-        role: 'zoomout',
-      },
-      {
         role: 'togglefullscreen',
+      },
+      {
+        type: 'separator',
+      },
+      {
+        label: 'Increase Font Size',
+        accelerator: 'CommandOrControl+=',
+        click() { fontsizeUtil.increaseFontSize(); },
+      },
+      {
+        label: 'Decrease Font Size',
+        accelerator: 'CommandOrControl+-',
+        click() { fontsizeUtil.decreaseFontSize(); },
+      },
+      {
+        label: 'Reset Font Size',
+        click() { fontsizeUtil.resetFontSize(); },
       },
     ],
   },

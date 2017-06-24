@@ -87,7 +87,6 @@ html, body {
   height: 100%;
   width: 25%;
   background-color: #262821;
-  font-size: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -96,6 +95,7 @@ html, body {
 .inner-header .title-container span {
   overflow: hidden;
   color: #DBDBDB;
+  font-size: 14px;
 }
 
 .inner-header .active-container {
