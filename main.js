@@ -55,13 +55,13 @@ function createWindow() {
     slashes: true,
   }));
 
-  // setTimeout(() => {
-  //   mainWindow.loadURL(url.format({
-  //     pathname: path.join(__dirname, 'app/html/index.html'),
-  //     protocol: 'file',
-  //     slashes: true,
-  //   }));
-  // }, 2300);
+  setTimeout(() => {
+    mainWindow.loadURL(url.format({
+      pathname: path.join(__dirname, 'app/html/index.html'),
+      protocol: 'file',
+      slashes: true,
+    }));
+  }, 2300);
 
   // 打开终端
   mainWindow.webContents.openDevTools();
