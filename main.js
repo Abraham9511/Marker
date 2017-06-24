@@ -119,5 +119,8 @@ app.on('activate', () => {
 // 从渲染进程中获取当前编辑区文件名
 // 并在title中显示
 ipcMain.on('title', (event, args) => {
-  mainWindow.setTitle(args);
+  // 只有当标题不为空才设置
+  if (args) {
+    mainWindow.setTitle(args);
+  }
 });
