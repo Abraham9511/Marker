@@ -8,6 +8,7 @@ const shortCutUtil = require('./app/js/main/shortCutUtil');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const Menu = electron.Menu;
+const ipcMain = electron.ipcMain;
 const windowState = storageUtil.getWindowState();
 const template = menuTemplate.template;
 let mainWindow;
@@ -61,6 +62,10 @@ function createWindow() {
       protocol: 'file',
       slashes: true,
     }));
+    // 在加载欢迎页面时，title为Marker
+    // 欢迎页面加载结束时，title为untitled
+    // 默认第一个文件是未命名的
+    mainWindow.setTitle('untitled');
   }, 2300);
 
   // 打开终端
@@ -109,4 +114,10 @@ app.on('activate', () => {
   if (mainWindow === null) {
     createWindow();
   }
+});
+
+// 从渲染进程中获取当前编辑区文件名
+// 并在title中显示
+ipcMain.on('title', (event, args) => {
+  mainWindow.setTitle(args);
 });
