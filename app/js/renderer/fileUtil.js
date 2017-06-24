@@ -111,9 +111,12 @@ const fileUtil = {
         throw err;
       }
       if (changeName) {
-        const title = $('#editorContainer').children('.inner-header').children().eq(index);
+        let title = $('#editorContainer').children('.inner-header').children().eq(index);
         const pathSplited = path.split('/');
         title.children().text(pathSplited[pathSplited.length - 1]);
+        title = $('#previewContainer').children('.inner-header').children().eq(index);
+        title.children().text(pathSplited[pathSplited.length - 1]);
+        ipcRenderer.send('title', path);;
       }
       ipcRenderer.send('mainFile', (event, ['saveSuccess', path]));
       if (type === 2) {
@@ -133,6 +136,7 @@ const fileUtil = {
   // 文件聚焦
   focus: (args) => {
     const index = args.index;
+    const path = args.path;
 
     $('.editor').hide();
     $('.editor').eq(index).show();
@@ -145,6 +149,7 @@ const fileUtil = {
     $('#previewContainer').children('.inner-header').children().eq(index)
     .addClass('active-container');
     reload(index);
+    ipcRenderer.send('title', path);
   },
   // 关闭文件
   close: (args) => {

@@ -363,7 +363,10 @@ ipcMain.on('mainFile', (event, arg) => {
       num = arg[1];
       result = searchNum(num);
       index = result;
-      sendMessageToRenderer('file', ['focus', { index }]);
+      sendMessageToRenderer('file', ['focus', {
+        index: index,
+        path : fileList[index].path,
+      }]);
       break;
     case 'saveSuccess' :
       path = arg[1];
