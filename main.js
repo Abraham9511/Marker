@@ -69,7 +69,7 @@ function createWindow() {
   }, 2300);
 
   // 打开终端
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 
   mainWindow.on('closed', () => {
     mainWindow = null;
