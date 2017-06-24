@@ -5,6 +5,7 @@ const reload = require('./reload').reload;
 const fileUtil = require('./fileUtil').fileUtil;
 const fontsizeUtil = require('./fontsizeUtil');
 const fontfamilyUtil = require('./fontfamilyUtil');
+const linenumberUtil = require('./linenumberUtil');
 
 const ipcRenderer = electron.ipcRenderer;
 
@@ -108,6 +109,11 @@ ipcRenderer.on('FS', (event, args) => {
 // 监听字体变化
 ipcRenderer.on('FF', (event, args) => {
   fontfamilyUtil.setFontfamily(args);
+});
+
+// 监听行号的现实与隐藏
+ipcRenderer.on('LN', (event, args) => {
+  linenumberUtil.toggleLinenumber();
 });
 
 // 监听file通道的上的信息，调用对应的文件操作函数

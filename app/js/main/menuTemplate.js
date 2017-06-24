@@ -3,6 +3,7 @@ const fileUtil = require('./fileUtil');
 const selectionUtil = require('./selectionUtil');
 const fontsizeUtil = require('./fontsizeUtil');
 const fontfamilyUtil = require('./fontfamilyUtil');
+const linenumberUtil = require('./linenumberUtil');
 
 const shell = electron.shell;
 
@@ -159,6 +160,17 @@ const template = [
   {
     label: 'Setting',
     submenu: [
+      {
+        label: 'lineNumber',
+        type: 'checkbox',
+        checked: true,
+        click() {
+          linenumberUtil.toggleLinenumber();
+        },
+      },
+      {
+        type: 'separator',
+      },
       {
         label: 'Font Family',
         submenu: [
