@@ -4,6 +4,7 @@ const cursorUtil = require('./cursorUtil');
 const reload = require('./reload').reload;
 const fileUtil = require('./fileUtil').fileUtil;
 const fontsizeUtil = require('./fontsizeUtil');
+const fontfamilyUtil = require('./fontfamilyUtil');
 
 const ipcRenderer = electron.ipcRenderer;
 
@@ -99,9 +100,14 @@ ipcRenderer.on('SE', (event, args) => {
   cursorUtil[args](fileIndex);
 });
 
-// 监听字体变化
+// 监听字号变化
 ipcRenderer.on('FS', (event, args) => {
   fontsizeUtil[args]();
+});
+
+// 监听字体变化
+ipcRenderer.on('FF', (event, args) => {
+  fontfamilyUtil.setFontfamily(args);
 });
 
 // 监听file通道的上的信息，调用对应的文件操作函数
