@@ -189,7 +189,7 @@ const fileUtil = {
     if (index !== 0) {
       fileUtil.focus({
         index: index - 1,
-        path: focusPath.
+        path: focusPath,
       });
     } else {
       if ($('.editor').length > 1) {
