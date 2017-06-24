@@ -10,6 +10,37 @@ const ipcRenderer = electron.ipcRenderer;
 // 文件的索引
 let fileIndex = 0;
 
+//阻止浏览器默认行
+$(document).on({
+  dragleave: function(e) { // 拖离
+    e.preventDefault();
+  },
+  drop: function(e) { // 拖后放
+    e.preventDefault();
+  },
+  dragenter: function(e) { // 拖进
+    e.preventDefault();
+  },
+  dragover: function(e) { // 拖来拖去
+    e.preventDefault();
+  }
+});
+
+// 文件拖拽上传
+$('.editor').on('drop', function(e) {
+  e.preventDefault();
+  const fileList = e.originalEvent.dataTransfer.files;
+
+  // 如果文件为空则返回
+  if (fileList.length === 0) {
+    return;
+  }
+  // 如果不是markdown文件则返回
+  if (fileList[0].type !== 'text/markdown') {
+    return;
+  }
+});
+
 // 这里使用事件代理
 $('.outer-header').delegate('img', 'click', function click() {
   // 由于这里需要用到this，所以不实用箭头函数
