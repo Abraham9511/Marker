@@ -32,7 +32,9 @@ $(document).on({
 $('.editor').on('drop', function(e) {
   e.preventDefault();
   const fileList = e.originalEvent.dataTransfer.files;
+  let paths = new Array();
 
+  console.log(fileList);
   // 如果文件为空则返回
   if (fileList.length === 0) {
     return;
@@ -41,6 +43,11 @@ $('.editor').on('drop', function(e) {
   if (fileList[0].type !== 'text/markdown') {
     return;
   }
+  for (let i = 0; i < fileList.length; i++) {
+    if (fileList[i].type === 'text/markdown')
+      paths.push(fileList[i].path);
+  }
+  ipcRenderer.send('mainFile', (event, ['openFile', paths]));
 });
 
 // 这里使用事件代理

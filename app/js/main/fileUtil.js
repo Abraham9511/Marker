@@ -275,57 +275,61 @@ const open = () => {
   }, (filePaths) => {
     // 将对文件的操作和文件路径发送到render进程
     if (typeof (filePaths) !== 'undefined') {
-      // console.log(filePaths);
-      // console.log(fileList);
-      // 存在找到的文件
-      let fileFound = -1;
-      let current = index + 1;
-      const args = {
-        index,
-        path: [],
-        num: [],
-        change: false,
-      };
-
-      if (fileList[index].path !== 'untitled' || fileList[index].saved !== 2) {
-        args.index += 1;
-      } else {
-        fileList.splice(index, 1);
-        args.change = true;
-      }
-      for (let i = 0; i < filePaths.length; i += 1) {
-        const flag = searchFile(filePaths[i]);
-        if (flag !== -1) {
-          fileFound = flag;
-        } else {
-          args.path.push(filePaths[i]);
-          fileNum += 1;
-          args.num.push(fileNum);
-          // 插入已打开的文件链表中
-          fileList.splice(current, 0, {
-            path: filePaths[i],
-            saved: 2,
-            empty: false,
-            closing: false,
-            num: fileNum,
-          });
-          current += 1;
-        }
-      }
-      // 现有文件中没有找到要打开的
-      // 读取文件完成后后将聚焦到将要打开的文件中的第一个
-      if (fileFound === -1) {
-        args.show = true;
-      } else {
-        args.show = false;
-        sendMessageToRenderer('file', ['focus', { index: fileFound }]);
-      }
-      if (args.path.length !== 0) {
-        sendMessageToRenderer('file', ['read', args]);
-      }
+      openFileWithPaths(filePaths);
     }
   });
 };
+
+const openFileWithPaths = (paths) => {
+  // console.log(paths);
+  // console.log(fileList);
+  // 存在找到的文件
+  let fileFound = -1;
+  let current = index + 1;
+  const args = {
+    index,
+    path: [],
+    num: [],
+    change: false,
+  };
+
+  if (fileList[index].path !== 'untitled' || fileList[index].saved !== 2) {
+    args.index += 1;
+  } else {
+    fileList.splice(index, 1);
+    args.change = true;
+  }
+  for (let i = 0; i < paths.length; i += 1) {
+    const flag = searchFile(paths[i]);
+    if (flag !== -1) {
+      fileFound = flag;
+    } else {
+      args.path.push(paths[i]);
+      fileNum += 1;
+      args.num.push(fileNum);
+      // 插入已打开的文件链表中
+      fileList.splice(current, 0, {
+        path: paths[i],
+        saved: 2,
+        empty: false,
+        closing: false,
+        num: fileNum,
+      });
+      current += 1;
+    }
+  }
+  // 现有文件中没有找到要打开的
+  // 读取文件完成后后将聚焦到将要打开的文件中的第一个
+  if (fileFound === -1) {
+    args.show = true;
+  } else {
+    args.show = false;
+    sendMessageToRenderer('file', ['focus', { index: fileFound }]);
+  }
+  if (args.path.length !== 0) {
+    sendMessageToRenderer('file', ['read', args]);
+  }
+}
 
 // 修改聚焦文件
 exports.changeFocusedFile = (i) => {
@@ -413,6 +417,10 @@ ipcMain.on('mainFile', (event, arg) => {
       path = arg[1];
       result = searchFile(path);
       showPdfDialog(result);
+      break;
+    case 'openFile' :
+      paths = arg[1];
+      openFileWithPaths(paths);
       break;
     default:
       break;
